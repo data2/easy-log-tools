@@ -133,7 +133,7 @@ namespace LogCollector
         {
             foreach (var server in _servers)
             {
-                if (string.IsNullOrWhiteSpace(server.IP) continue;
+                if (string.IsNullOrWhiteSpace(server.IP)) continue;
 
                 var logPaths = server.LogPaths?
                     .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
@@ -228,5 +228,13 @@ namespace LogCollector
             return ip == "127.0.0.1" || ip == "localhost" ||
                    ip.Equals(System.Net.Dns.GetHostName(), StringComparison.OrdinalIgnoreCase);
         }
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is PasswordBox passwordBox && passwordBox.Tag is ServerConfig server)
+            {
+                server.Password = passwordBox.Password;
+            }
+        }
+
     }
 }

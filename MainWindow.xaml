@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LogCollector"
         mc:Ignorable="d"
-        Title="日志采集工具" Height="600" Width="800">
+        Title="EasyLog分布式日志采集工具" Height="600" Width="800">
     <Grid>
         <TabControl>
             <!-- 配置页面 -->
@@ -25,10 +25,11 @@
                             <DataGridTemplateColumn Header="密码" Width="120">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <PasswordBox Password="{Binding Password}" Tag="{Binding}"/>
+                                        <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" Tag="{Binding}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+
                             <DataGridTemplateColumn Header="日志路径(多个用分号隔开)" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -41,11 +42,12 @@
                     </DataGrid>
 
                     <!-- 操作按钮 -->
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-                        <Button Content="测试连接" Click="TestConnection_Click" Width="80" Margin="0,0,5,0"/>
-                        <Button Content="保存配置" Click="SaveConfig_Click" Width="80" Margin="0,0,5,0"/>
-                        <Button Content="采集日志" Click="CollectLogs_Click" Width="80"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                        <Button Content="测试连接" Click="TestConnection_Click" Width="80" Margin="5"/>
+                        <Button Content="保存配置" Click="SaveConfig_Click" Width="80" Margin="5"/>
+                        <Button Content="采集日志" Click="CollectLogs_Click" Width="80" Margin="5"/>
                     </StackPanel>
+
                 </Grid>
             </TabItem>
 
