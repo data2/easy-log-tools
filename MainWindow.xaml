@@ -5,8 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LogCollector"
         mc:Ignorable="d"
-        Title="EasyLog分布式日志采集工具" Height="600" Width="800">
+        Title="EasyLog分布式日志采集工具" Height="600" Width="800"
+        Icon="images/logo.ico">
     <Grid>
+        <!-- 添加菜单栏 -->
+        <Menu VerticalAlignment="Top">
+            <MenuItem Header="工具">
+                
+                <MenuItem Header="联系人" Click="ShowContacts_Click"/>
+                <!-- 新增菜单项 -->
+            </MenuItem>
+        </Menu>
         <TabControl>
             <!-- 配置页面 -->
             <TabItem Header="服务器配置">
@@ -41,12 +50,17 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
+                    
+
+
                     <!-- 操作按钮 -->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                         <Button Content="测试连接" Click="TestConnection_Click" Width="80" Margin="5"/>
                         <Button Content="保存配置" Click="SaveConfig_Click" Width="80" Margin="5"/>
                         <Button Content="采集日志" Click="CollectLogs_Click" Width="80" Margin="5"/>
                     </StackPanel>
+
+    
 
                 </Grid>
             </TabItem>

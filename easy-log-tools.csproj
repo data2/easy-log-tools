@@ -10,8 +10,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove="Images\logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Renci.SshNet.Abstractions" Version="2020.0.2" />
     <PackageReference Include="System.Text.Json" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include=".gitattributes">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\logo.ico" />
   </ItemGroup>
 
 </Project>

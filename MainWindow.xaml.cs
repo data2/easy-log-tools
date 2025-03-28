@@ -37,6 +37,8 @@ namespace LogCollector
             ServerGrid.ItemsSource = _servers;
             ServerFilter.ItemsSource = _servers;
             LogDataGrid.ItemsSource = _logs;
+            //MessageBox.Show("窗口已加载");
+
         }
 
         private void LoadConfig()
@@ -236,5 +238,12 @@ namespace LogCollector
             }
         }
 
+
+        // 显示联系人窗口
+        private void ShowContacts_Click(object sender, RoutedEventArgs e)
+        {
+            ContactsWindow contactsWindow = new ContactsWindow();
+            contactsWindow.ShowDialog(); // 弹出联系人窗口
+        }
     }
 }
