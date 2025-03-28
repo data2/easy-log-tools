@@ -1,0 +1,81 @@
+﻿<Window x:Class="LogCollector.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LogCollector"
+        mc:Ignorable="d"
+        Title="日志采集工具" Height="600" Width="800">
+    <Grid>
+        <TabControl>
+            <!-- 配置页面 -->
+            <TabItem Header="服务器配置">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 服务器列表 -->
+                    <DataGrid x:Name="ServerGrid" Grid.Row="0" Margin="5"
+                             AutoGenerateColumns="False" CanUserAddRows="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="IP地址" Binding="{Binding IP}" Width="120"/>
+                            <DataGridTextColumn Header="用户名" Binding="{Binding Username}" Width="100"/>
+                            <DataGridTemplateColumn Header="密码" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <PasswordBox Password="{Binding Password}" Tag="{Binding}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="日志路径(多个用分号隔开)" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding LogPaths, UpdateSourceTrigger=PropertyChanged}" 
+                                                 ToolTip="多个路径用分号(;)隔开"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- 操作按钮 -->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                        <Button Content="测试连接" Click="TestConnection_Click" Width="80" Margin="0,0,5,0"/>
+                        <Button Content="保存配置" Click="SaveConfig_Click" Width="80" Margin="0,0,5,0"/>
+                        <Button Content="采集日志" Click="CollectLogs_Click" Width="80"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- 日志页面 -->
+            <TabItem Header="日志查看" x:Name="LogTab">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 搜索栏 -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                        <ComboBox x:Name="ServerFilter" DisplayMemberPath="IP" Width="150" Margin="0,0,5,0"
+                                 ToolTip="按服务器筛选"/>
+                        <TextBox x:Name="SearchTextBox" Width="200" Margin="0,0,5,0" 
+                                ToolTip="输入搜索关键词"/>
+                        <Button Content="搜索" Click="SearchLogs_Click" Width="60"/>
+                    </StackPanel>
+
+                    <!-- 日志列表 -->
+                    <DataGrid x:Name="LogDataGrid" Grid.Row="1" Margin="5" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="服务器IP" Binding="{Binding ServerIP}" Width="120"/>
+                            <DataGridTextColumn Header="时间" Binding="{Binding Timestamp, StringFormat='yyyy-MM-dd HH:mm:ss'}" Width="150"/>
+                            <DataGridTextColumn Header="日志内容" Binding="{Binding Content}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
