@@ -3,7 +3,7 @@
 # EasyLog 分布式日志采集工具 - 使用说明
 
 ## 概述
-EasyLog 是一款基于 WPF 开发的分布式日志采集工具，支持从多台服务器批量采集日志并集中查看。界面友好，操作简便。
+EasyLog 是一款分布式日志采集工具，支持从多台服务器批量采集日志并集中查看。界面友好，操作简便。
 
 ## 软件下载
 [官方下载](https://github.com/data2/easy-log-tools/releases/download/v1.0.0/EasyLog.exe)
