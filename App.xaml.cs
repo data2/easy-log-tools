@@ -12,7 +12,10 @@ namespace LogCollector
         {
             base.OnStartup(e);
 
+            
+
             bool isAllowed = await CheckUsagePermission();
+
 
             if (!isAllowed)
             {

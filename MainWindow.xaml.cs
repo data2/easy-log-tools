@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using Renci.SshNet;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Win32; // 用于文件对话框
 
 namespace LogCollector
 {
@@ -14,10 +15,13 @@ namespace LogCollector
     {
         public class ServerConfig
         {
+            public string Name { get; set; } // 新增配置名称
+            public bool IsSelected { get; set; } // 新增用于多选的属性
             public string IP { get; set; }
             public string Username { get; set; }
             public string Password { get; set; }
             public string LogPaths { get; set; }
+            public int TailLines { get; set; } = 50; // 默认50行
         }
 
         public class LogEntry
@@ -32,6 +36,10 @@ namespace LogCollector
 
         public MainWindow()
         {
+
+            // 显示启动界面
+            ShowSplashScreen();
+
             InitializeComponent();
             LoadConfig();
             ServerGrid.ItemsSource = _servers;
@@ -40,6 +48,20 @@ namespace LogCollector
             //MessageBox.Show("窗口已加载");
 
         }
+
+        private async void ShowSplashScreen()
+        {
+            // 创建并显示启动窗口
+            SplashWindow splash = new SplashWindow();
+            splash.Show();
+
+            // 延迟2秒钟模拟加载时间
+            await Task.Delay(3000);
+
+            // 关闭启动界面，显示主窗口
+            splash.Close();
+        }
+
 
         private void LoadConfig()
         {
@@ -133,7 +155,14 @@ namespace LogCollector
 
         private void CollectAllLogs(IProgress<string> progress)
         {
-            foreach (var server in _servers)
+            var selectedServers = _servers.Where(s => s.IsSelected).ToList();
+            if (selectedServers.Count == 0)
+            {
+                MessageBox.Show("请先选择要操作的服务器", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            foreach (var server in selectedServers)
             {
                 if (string.IsNullOrWhiteSpace(server.IP)) continue;
 
@@ -148,7 +177,7 @@ namespace LogCollector
                     continue;
                 }
 
-                foreach (var path in logPaths)
+                foreach (var path in logPaths.Select(ResolveLogPath))
                 {
                     try
                     {
@@ -160,7 +189,8 @@ namespace LogCollector
                                 continue;
                             }
 
-                            var lines = File.ReadLines(path).TakeLast(50);
+                            var tailLines = server.TailLines > 0 ? server.TailLines : 50; // 默认50
+                            var lines = File.ReadLines(path).TakeLast(tailLines);
                             foreach (var line in lines)
                             {
                                 Application.Current.Dispatcher.Invoke(() =>
@@ -180,7 +210,8 @@ namespace LogCollector
                             using (var client = new SshClient(server.IP, server.Username, server.Password))
                             {
                                 client.Connect();
-                                var cmd = client.CreateCommand($"tail -n 50 {path}");
+                                var tailLines = server.TailLines > 0 ? server.TailLines : 50; // 默认50
+                                var cmd = client.CreateCommand($"tail -n {tailLines} {path}");
                                 var result = cmd.Execute();
 
                                 foreach (var line in result.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)))
@@ -239,11 +270,143 @@ namespace LogCollector
         }
 
 
-        // 显示联系人窗口
-        private void ShowContacts_Click(object sender, RoutedEventArgs e)
+
+        private void ImportConfig_Click(object sender, RoutedEventArgs e)
         {
-            ContactsWindow contactsWindow = new ContactsWindow();
-            contactsWindow.ShowDialog(); // 弹出联系人窗口
+            MessageBox.Show("开始导入配置");
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "JSON 文件 (*.json)|*.json",
+                Title = "导入服务器配置"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string json = File.ReadAllText(openFileDialog.FileName);
+                    var importedServers = JsonSerializer.Deserialize<ObservableCollection<ServerConfig>>(json);
+
+                    if (importedServers != null)
+                    {
+                        _servers.Clear();
+                        foreach (var server in importedServers)
+                        {
+                            _servers.Add(server);
+                        }
+                        MessageBox.Show("配置导入成功", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"导入失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
+
+        private void ExportConfig_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "JSON 文件 (*.json)|*.json",
+                Title = "导出服务器配置",
+                FileName = "config.json"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string json = JsonSerializer.Serialize(_servers, new JsonSerializerOptions { WriteIndented = true });
+                    File.WriteAllText(saveFileDialog.FileName, json);
+                    MessageBox.Show("配置导出成功", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"导出失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void ShowAbout_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("EasyLog v1.0\n分布式日志采集工具 \n联系方式xagent@126.com", "关于", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void DeleteServer_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is ServerConfig server)
+            {
+                if (MessageBox.Show($"确定要删除服务器 {server.Name} ({server.IP}) 吗？",
+                    "确认删除", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    _servers.Remove(server);
+                    MessageBox.Show("服务器已删除", "删除成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        private void AddServer_Click(object sender, RoutedEventArgs e)
+        {
+            // 创建一个新的服务器配置对象
+            var newServer = new ServerConfig
+            {
+                Name = "新服务器",
+                IP = "127.0.0.1",
+                Username = "root",
+                Password = "",
+                LogPaths = "/var/log/syslog-{YYYY}-{MM}-{DD}.log"
+            };
+
+            // 添加到服务器列表
+            _servers.Add(newServer);
+
+            // 选中新添加的服务器（如果需要）
+            ServerGrid.SelectedItem = newServer;
+        }
+
+        private string ResolveLogPath(string path)
+        {
+            var now = DateTime.Now;
+            var replacements = new Dictionary<string, string>
+            {
+                { "{YYYY}", now.ToString("yyyy") },
+                { "{yyyy}", now.ToString("yyyy") },
+                { "{MM}", now.ToString("MM") },
+                { "{mm}", now.ToString("MM") },
+                { "{DD}", now.ToString("dd") },
+                { "{dd}", now.ToString("dd") },
+                { "{HH}", now.ToString("HH") },
+                { "{hh}", now.ToString("HH") },
+                { "{YYYYMMDD}", now.ToString("yyyyMMdd") },
+                { "{yyyymmdd}", now.ToString("yyyyMMdd") }
+            };
+
+            foreach (var kvp in replacements)
+            {
+                path = path.Replace(kvp.Key, kvp.Value);
+            }
+
+            return path;
+        }
+
+        // 关闭窗口时弹出确认框
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // 弹出确认框
+            var result = MessageBox.Show("确定要关闭应用吗？", "确认", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.No)
+            {
+                // 如果用户点击了 No，取消关闭操作
+                e.Cancel = true;
+            }
+            else
+            {
+                // 用户点击 Yes，继续关闭
+                e.Cancel = false;
+            }
+        }
+
     }
 }

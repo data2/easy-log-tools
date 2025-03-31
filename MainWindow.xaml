@@ -4,19 +4,41 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LogCollector"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing" 
         mc:Ignorable="d"
-        Title="EasyLog分布式日志采集工具" Height="600" Width="800"
+        Title="EasyLog分布式日志采集工具" Height="750" Width="1250"
         Icon="images/logo.ico">
     <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- 菜单栏，占据最小必要空间 -->
+            <RowDefinition Height="*"/>
+            <!-- 剩余空间给主要内容 -->
+        </Grid.RowDefinitions>
         <!-- 添加菜单栏 -->
-        <Menu VerticalAlignment="Top">
+        <!-- 菜单栏 -->
+        <Menu Grid.Row="0" VerticalAlignment="Top" 
+      FontSize="12" FontFamily="Segoe UI" 
+      FontWeight="Bold" Padding="5">
+            <MenuItem Header="文件">
+                <MenuItem Header="导入配置" Click="ImportConfig_Click"/>
+                <MenuItem Header="导出配置" Click="ExportConfig_Click"/>
+            </MenuItem>
             <MenuItem Header="工具">
-                
-                <MenuItem Header="联系人" Click="ShowContacts_Click"/>
-                <!-- 新增菜单项 -->
+                <MenuItem Header="测试连接" Click="TestConnection_Click"/>
+                <MenuItem Header="采集日志" Click="CollectLogs_Click"/>
+            </MenuItem>
+            <MenuItem Header="帮助">
+                <MenuItem Header="关于" Click="ShowAbout_Click"/>
             </MenuItem>
         </Menu>
-        <TabControl>
+
+
+
+        <TabControl Grid.Row="1" Margin="10,5,10,10">
             <!-- 配置页面 -->
             <TabItem Header="服务器配置">
                 <Grid>
@@ -27,8 +49,18 @@
 
                     <!-- 服务器列表 -->
                     <DataGrid x:Name="ServerGrid" Grid.Row="0" Margin="5"
-                             AutoGenerateColumns="False" CanUserAddRows="True">
+          AutoGenerateColumns="False" CanUserAddRows="True">
                         <DataGrid.Columns>
+                            <!-- 选择框列 -->
+                            <DataGridTemplateColumn Header="选择" Width="50">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="配置名称" Binding="{Binding Name}" Width="120"/>
                             <DataGridTextColumn Header="IP地址" Binding="{Binding IP}" Width="120"/>
                             <DataGridTextColumn Header="用户名" Binding="{Binding Username}" Width="100"/>
                             <DataGridTemplateColumn Header="密码" Width="120">
@@ -43,24 +75,56 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBox Text="{Binding LogPaths, UpdateSourceTrigger=PropertyChanged}" 
-                                                 ToolTip="多个路径用分号(;)隔开"/>
+                             ToolTip="多个路径用分号(;)隔开"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Tail 行数" Width="60">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox SelectedItem="{Binding TailLines, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="60">
+                                            <ComboBox.ItemsSource>
+                                                <x:Array Type="{x:Type sys:Int32}">
+                                                    <sys:Int32>50</sys:Int32>
+                                                    <sys:Int32>100</sys:Int32>
+                                                    <sys:Int32>300</sys:Int32>
+                                                    <sys:Int32>500</sys:Int32>
+                                                    <sys:Int32>1000</sys:Int32>
+                                                </x:Array>
+                                            </ComboBox.ItemsSource>
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+
+
+                            <DataGridTemplateColumn Header="操作" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="删除" Click="DeleteServer_Click" Tag="{Binding}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
                         </DataGrid.Columns>
                     </DataGrid>
-
-                    
 
 
                     <!-- 操作按钮 -->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                        <Button Content="采集日志" Click="CollectLogs_Click" Width="80" Margin="5"/>
+                        <Button Content="新增配置" Click="AddServer_Click" Width="80" Margin="5"/>
                         <Button Content="测试连接" Click="TestConnection_Click" Width="80" Margin="5"/>
                         <Button Content="保存配置" Click="SaveConfig_Click" Width="80" Margin="5"/>
-                        <Button Content="采集日志" Click="CollectLogs_Click" Width="80" Margin="5"/>
+                        <Button Content="导入配置" Click="ImportConfig_Click" Width="80" Margin="5"/>
+                        <Button Content="导出配置" Click="ExportConfig_Click" Width="80" Margin="5"/>
                     </StackPanel>
 
-    
+
+
+
 
                 </Grid>
             </TabItem>

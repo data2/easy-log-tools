@@ -7,11 +7,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <AssemblyName>EasyLog</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove=".gitattributes" />
     <None Remove="Images\logo.ico" />
+    <None Remove="Images\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +27,10 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\logo.ico" />
+    <Content Include="Images\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="logo.ico" />
   </ItemGroup>
 
 </Project>
