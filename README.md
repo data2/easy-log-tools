@@ -3,7 +3,10 @@
 # EasyLog ·Ö²¼Ê½ÈÕÖ¾²É¼¯¹¤¾ß - Ê¹ÓÃËµÃ÷
 
 ## ¸ÅÊö
-EasyLog ÊÇÒ»¿î»ùÓÚ WPF ¿ª·¢µÄ·Ö²¼Ê½ÈÕÖ¾²É¼¯¹¤¾ß£¬Ö§³Ö´Ó¶àÌ¨·þÎñÆ÷ÅúÁ¿²É¼¯ÈÕÖ¾²¢¼¯ÖÐ²é¿´¡£¹¤¾ß²ÉÓÃ C# ¿ª·¢£¬½çÃæÓÑºÃ£¬²Ù×÷¼ò±ã¡£
+EasyLog ÊÇÒ»¿î»ùÓÚ WPF ¿ª·¢µÄ·Ö²¼Ê½ÈÕÖ¾²É¼¯¹¤¾ß£¬Ö§³Ö´Ó¶àÌ¨·þÎñÆ÷ÅúÁ¿²É¼¯ÈÕÖ¾²¢¼¯ÖÐ²é¿´¡£½çÃæÓÑºÃ£¬²Ù×÷¼ò±ã¡£
+
+## Èí¼þÏÂÔØ
+[¹Ù·½ÏÂÔØ](https://github.com/data2/easy-log-tools/releases/download/v1.0.0/EasyLog.exe)
 
 ## ¹¦ÄÜÌØÐÔ
 
@@ -16,7 +19,7 @@ EasyLog ÊÇÒ»¿î»ùÓÚ WPF ¿ª·¢µÄ·Ö²¼Ê½ÈÕÖ¾²É¼¯¹¤¾ß£¬Ö§³Ö´Ó¶àÌ¨·þÎñÆ÷ÅúÁ¿²É¼¯ÈÕÖ¾²¢¼
 ## ½çÃæËµÃ÷
 
 ### Ö÷½çÃæ²¼¾Ö
-![Ö÷½çÃæÊ¾ÒâÍ¼](images/logo.ico)
+![Ö÷½çÃæÊ¾ÒâÍ¼](Images/logo.png)
 
 1. **¶¥²¿²Ëµ¥À¸**£ºÌá¹©ÎÄ¼þ¡¢¹¤¾ß¡¢°ïÖúµÈ¹¦ÄÜÈë¿Ú
 2. **ÅäÖÃÑ¡Ïî¿¨**£º°üº¬"·þÎñÆ÷ÅäÖÃ"ºÍ"ÈÕÖ¾²é¿´"Á½¸ö±êÇ©Ò³
