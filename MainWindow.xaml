@@ -139,7 +139,7 @@
 
                     <!-- 搜索栏 -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
-                        <ComboBox x:Name="ServerFilter" DisplayMemberPath="IP" Width="150" Margin="0,0,5,0"
+                        <ComboBox x:Name="ServerFilter" DisplayMemberPath="Name" Width="150" Margin="0,0,5,0"
                                  ToolTip="按服务器筛选"/>
                         <TextBox x:Name="SearchTextBox" Width="200" Margin="0,0,5,0" 
                                 ToolTip="输入搜索关键词"/>
